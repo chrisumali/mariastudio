@@ -1,3 +1,6 @@
+using MariaStudio.WebApp.Services;
+using MySqlConnector;
+
 namespace MariaStudio.WebApp
 {
     public class Program
@@ -6,8 +9,18 @@ namespace MariaStudio.WebApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            var connectionString = new MySqlConnectionStringBuilder(
+                builder.Configuration.GetConnectionString("MariaDb")
+                    ?? throw new InvalidOperationException("ConnectionStrings:MariaDb is required."))
+            {
+                AllowLoadLocalInfile = false,
+                AllowUserVariables = true
+            };
+            builder.Services.AddMySqlDataSource(connectionString.ConnectionString);
+            builder.Services.AddScoped<QueryService>();
+            builder.Services.AddScoped<SchemaService>();
 
             var app = builder.Build();
 
@@ -27,7 +40,7 @@ namespace MariaStudio.WebApp
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Query}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

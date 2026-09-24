@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Query";
+    Layout = "_StudioLayout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/monaco-editor/min/vs/editor/editor.main.css" />
+}
+
+<div class="studio">
+    <aside id="schema" class="schema" aria-label="Schema"></aside>
+    <section class="workspace">
+        <div class="toolbar">
+            <button id="run" type="button" class="btn btn-primary btn-sm">Run</button>
+            <span id="status"></span>
+        </div>
+        <div id="editor"></div>
+        <div id="results"></div>
+    </section>
+</div>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script src="~/lib/monaco-editor/min/vs/loader.js"></script>
+    <script src="~/js/query-editor.js" asp-append-version="true"></script>
+}
